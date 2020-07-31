@@ -31,27 +31,35 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-      search-engine
-      github
-     ;; markdown
-     (conda :variables conda-anaconda-home "/home/alkhaldieid/anaconda3/")
-     (python :variables python-backend 'anaconda)
-     ;; anaconda-mode
-     ;; prose
-     ipython-notebook
 
-;;     python
-     ;; ipython-notebook
-     ;; shell-scripts
- ;;    vimscripts
+     (search-engine :variables
+                    browse-url-browser-function 'browse-url-generic
+                    engine/browser-function 'browse-url-generic
+                    browse-url-generic-program "brave")
+      github
+      (conda :variables
+             conda-anaconda-home "/home/alkhaldieid/anaconda3/"
+             python-test-runner 'pytest
+             python-formatter 'yapf
+             python-format-on-save t
+             python-save-before-test t
+             python-fill-column 99
+             python-sort-imports-on-save t
+             )
+     (python :variables python-backend 'anaconda)
+     ipython-notebook
      bibtex
      html
      octave
-     ;; spacemacs-completion
      (latex :variables
             latex-enable-folding t
             latex-enable-magic t
             latex-enable-auto-fill t
+            magic-latex-enable-block-align t
+            magic-latex-enable-inline-image t
+            magic-latex-enable-pretty-symbols t
+            magic-latex-enable-block-highlight t
+            magic-latex-enable-suscript t
             )
      pdf
      helm
@@ -67,15 +75,41 @@ values."
                       auto-completion-enable-help-tooltip t
                       auto-completion-use-company-box t
                       auto-completion-enable-sort-by-usage t)
-     better-defaults
+     ( better-defaults :variables
+                       better-defaults-move-to-beginning-of-code-first t
+                       better-defaults-move-to-end-of-code-first t
+     )
+     helpful
+     (ranger :variables
+             ranger-show-preview t)
+
      emacs-lisp
      git
      markdown
-     org
-     ;; (shell :variables
-     ;;         shell-default-height 30
-     ;;         shell-default-position 'bottom)
+     ( org :variables
+           org-enable-github-support t
+           org-projectile-file "/home/alkhaldieid/Dropbox/TODOs.org"
+           ;;; enables Twitter
+           org-enable-bootstrap-support t
+           org-enable-org-journal-support t
+           org-journal-dir "~/Dropbox/org/roam"
+           org-journal-file-format "%Y-%m-%d"
+           org-journal-date-prefix "#+TITLE: "
+           org-journal-date-format "%A, %B %d %Y"
+           org-journal-time-prefix "* "
+           org-journal-time-format ""
+           org-enable-trello-support t
+           org-projectile-file "~/Dropbox/TODOs.org"
+           org-enable-sticky-header t
+           )
+     quickurl
+     semantic
+     selectric
+     emoji
+     (unicode-fonts :variables unicode-fonts-force-multi-color-on-mac t)
+     ;; treemacs
      spell-checking
+     ;; multiple-cursors :variables multiple-cursors-backend 'evil-mc
      syntax-checking
      version-control
      ;; private layers
@@ -83,7 +117,9 @@ values."
      org-roam-bibtex
      org-noter
      synosaurus
-     ;; org-recoll
+     ;; media
+
+
      (deft :variables
            deft-zetteldeft t
            deft-default-extension "org"
@@ -96,13 +132,8 @@ values."
            '((noslash . "-")
              (nospace . "-")
              (case-fn . downcase))
-
            )
      themes-megapack
-     ;; :config
-     ;; (add-to-list 'deft-extensions "tex")
-
-
      )
 
    ;; List of additional packages that will be installed without being
@@ -179,7 +210,7 @@ values."
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
-   ;; `recents' `bookmarks' `projects' `agenda' `todos'."
+   ;; `recents' `bookmarks' `projects' `agenda' `to/usedos'."
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
    dotspacemacs-startup-lists '((recents . 8)
@@ -405,6 +436,20 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ":END:\n\n"
     )
    )
+
+  (defun my-org-screenshot ()
+    "Take a screenshot into a time stamped unique-named file in the
+same directory as the org-buffer and insert a link to this file."
+    (interactive)
+    (setq filename
+          (concat
+           (make-temp-name
+            (concat (buffer-file-name)
+                    "_"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+    (call-process "import" nil nil nil filename)
+    (insert (concat "[[" filename "]]"))
+    (org-display-inline-images))
   )
 
 (defun dotspacemacs/user-config ()
@@ -414,6 +459,23 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  ;;;; to fix the 'no org-babel-execute function for latex' when evaluating
+  ;;; src_block latex
+  ;; org settings
+  (setq user-full-name "Eid Alkhaldi")
+  (require 'org)
+  (require 'ox-latex)
+  (setq org-latex-create-formula-image-program 'dvipng)
+  (org-babel-do-load-languages 'org-babel-load-languages '((latex . t)))
+  (with-eval-after-load 'org-agenda
+    (require 'org-projectile)
+    (mapcar '(lambda (file)
+               (when (file-exists-p file)
+                 (push file org-agenda-files)))
+            (org-projectile-todo-files)))
+
+
+
   (global-company-mode)
   (add-to-list 'load-path "/home/alkhaldieid/.emacs.d/private/org-recoll/org-recoll")
   (require 'org-recoll)
@@ -483,6 +545,9 @@ you should place your code here."
                          "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n"
                          :prepend t
                          :kill-buffer t))
+   ;;; enables the live-preview of compiled pdfs
+   (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+
 ;; )
 )
 ;; Do not write anything past this comment. This is where Emacs will
@@ -513,14 +578,15 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa96a61e4eca5f339ad7f1f3442cb5a83696f6a45d9fe2a7bf3b75fc6912bb91" "0fffa9669425ff140ff2ae8568c7719705ef33b7a927a0ba7c5e2ffcfac09b75" "7325707722224b12180bfdcad597c5a79b2efe061f17df8fa24a8cb82839e854" default)))
+    ("f56eb33cd9f1e49c5df0080a3e8a292e83890a61a89bceeaa481a5f183e8e3ef" "82360e5f96244ce8cc6e765eeebe7788c2c5f3aeb96c1a765629c5c7937c0b5b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa96a61e4eca5f339ad7f1f3442cb5a83696f6a45d9fe2a7bf3b75fc6912bb91" "0fffa9669425ff140ff2ae8568c7719705ef33b7a927a0ba7c5e2ffcfac09b75" "7325707722224b12180bfdcad597c5a79b2efe061f17df8fa24a8cb82839e854" default)))
  '(evil-want-Y-yank-to-eol nil)
  '(helm-recoll-directories (quote (("~/Dropbox/mend/" . ""))))
  '(org-agenda-files (quote ("~/Dropbox/main_org/main.org")))
  '(org-roam-directory "/home/alkhaldieid/Dropbox/org/roam")
+ '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
    (quote
-    (unfill mwim bibtex-completion awqat magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht engine-mode ranger auctex-latexmk yasnippet-classic-snippets web-mode tagedit slim-mode scss-mode sass-mode pug-mode org-ref pdf-tools key-chord ivy tablist insert-shebang helm-css-scss helm-bibtex parsebib haml-mode fish-mode emmet-mode ein polymode deferred anaphora websocket company-web web-completion-data company-shell biblio biblio-core org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot mango-dark-theme xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help conda smeargle orgit magit-gitflow magit-popup helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit git-commit with-editor transient helm-company helm-c-yasnippet fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet auto-dictionary auctex ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async notmuch)))
+    (helm-emms emms-state emms unfill mwim bibtex-completion awqat magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht engine-mode ranger auctex-latexmk yasnippet-classic-snippets web-mode tagedit slim-mode scss-mode sass-mode pug-mode org-ref pdf-tools key-chord ivy tablist insert-shebang helm-css-scss helm-bibtex parsebib haml-mode fish-mode emmet-mode ein polymode deferred anaphora websocket company-web web-completion-data company-shell biblio biblio-core org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot mango-dark-theme xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help conda smeargle orgit magit-gitflow magit-popup helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit git-commit with-editor transient helm-company helm-c-yasnippet fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet auto-dictionary auctex ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async notmuch)))
  '(synosaurus-backend (quote synosaurus-backend-wordnet))
  '(synosaurus-choose-method (quote default)))
 (custom-set-faces
@@ -528,5 +594,5 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 4096)) (:foreground "#5f5f5f" :background "#fdfde7")) (((class color) (min-colors 256)) (:foreground "#5f5f5f" :background "#fdfde7")) (((class color) (min-colors 89)) (:foreground "#5f5f5f" :background "#fdfde7")))))
+ )
 )
