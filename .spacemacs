@@ -30,27 +30,8 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
-
-     (search-engine :variables
-                    browse-url-browser-function 'browse-url-generic
-                    engine/browser-function 'browse-url-generic
-                    browse-url-generic-program "brave")
-      github
-      (conda :variables
-             conda-anaconda-home "/home/alkhaldieid/anaconda3/"
-             python-test-runner 'pytest
-             python-formatter 'yapf
-             python-format-on-save t
-             python-save-before-test t
-             python-fill-column 99
-             python-sort-imports-on-save t
-             )
-     (python :variables python-backend 'anaconda)
-     ipython-notebook
+   '(;;; prose
      bibtex
-     html
-     octave
      (latex :variables
             latex-enable-folding t
             latex-enable-magic t
@@ -61,32 +42,7 @@ values."
             magic-latex-enable-block-highlight t
             magic-latex-enable-suscript t
             )
-     pdf
-     helm
-     (auto-completion :variables
-                      auto-completion-return-key-behavior 'complete
-                      auto-completion-tab-key-behavior 'cycle
-                      auto-completion-complete-with-key-sequence "jk"
-                      auto-completion-complete-with-key-sequence-delay 0.0
-                      auto-completion-minimum-prefix-length 1
-                      auto-completion-idle-delay 0.0
-                      auto-completion-private-snippets-directory nil
-                      auto-completion-enable-snippets-in-popup t
-                      auto-completion-enable-help-tooltip t
-                      auto-completion-use-company-box t
-                      auto-completion-enable-sort-by-usage t)
-     ( better-defaults :variables
-                       better-defaults-move-to-beginning-of-code-first t
-                       better-defaults-move-to-end-of-code-first t
-     )
-     helpful
-     (ranger :variables
-             ranger-show-preview t)
-
-     emacs-lisp
-     git
-     markdown
-     ( org :variables
+     (org :variables
            org-enable-github-support t
            org-projectile-file "/home/alkhaldieid/Dropbox/TODOs.org"
            ;;; enables Twitter
@@ -102,9 +58,48 @@ values."
            org-projectile-file "~/Dropbox/TODOs.org"
            org-enable-sticky-header t
            )
+     helm
+     (auto-completion :variables
+                      auto-completion-return-key-behavior 'complete
+                      auto-completion-tab-key-behavior 'cycle
+                      ;; auto-completion-complete-with-key-sequence "jk"
+                      auto-completion-complete-with-key-sequence-delay 0.0
+                      auto-completion-minimum-prefix-length 1
+                      auto-completion-idle-delay 0.0
+                      auto-completion-private-snippets-directory nil
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-use-company-box t
+                      auto-completion-enable-sort-by-usage t)
+     shell
+     (conda :variables
+             conda-anaconda-home "/home/alkhaldieid/anaconda3/"
+             python-test-runner 'pytest
+             python-formatter 'yapf
+             python-format-on-save t
+             python-save-before-test t
+             python-fill-column 99
+             python-sort-imports-on-save t
+             )
+     (python :variables python-backend 'anaconda)
+     ipython-notebook
+     html
+     octave
+     pdf
+     ( better-defaults :variables
+                       better-defaults-move-to-beginning-of-code-first t
+                       better-defaults-move-to-end-of-code-first t
+     )
+     helpful
+     (ranger :variables
+             ranger-show-preview t)
+
+     emacs-lisp
+     git
+     markdown
      quickurl
      semantic
-     selectric
+     ;; selectric
      emoji
      (unicode-fonts :variables unicode-fonts-force-multi-color-on-mac t)
      ;; treemacs
@@ -118,8 +113,6 @@ values."
      org-noter
      synosaurus
      ;; media
-
-
      (deft :variables
            deft-zetteldeft t
            deft-default-extension "org"
@@ -133,7 +126,13 @@ values."
              (nospace . "-")
              (case-fn . downcase))
            )
+     ;; extras
      themes-megapack
+     (search-engine :variables
+                    browse-url-browser-function 'browse-url-generic
+                    engine/browser-function 'browse-url-generic
+                    browse-url-generic-program "brave")
+     github
      )
 
    ;; List of additional packages that will be installed without being
@@ -436,7 +435,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ":END:\n\n"
     )
    )
-
+;;;;;;;;;;;;;;;;;;;;;;;;;; My functions ;;;;;;;;;;;;;;;;;;
   (defun my-org-screenshot ()
     "Take a screenshot into a time stamped unique-named file in the
 same directory as the org-buffer and insert a link to this file."
@@ -450,6 +449,7 @@ same directory as the org-buffer and insert a link to this file."
     (call-process "import" nil nil nil filename)
     (insert (concat "[[" filename "]]"))
     (org-display-inline-images))
+
   )
 
 (defun dotspacemacs/user-config ()
@@ -461,6 +461,7 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   ;;;; to fix the 'no org-babel-execute function for latex' when evaluating
   ;;; src_block latex
+  ;; org settings
   ;; org settings
   (setq user-full-name "Eid Alkhaldi")
   (require 'org)
@@ -477,8 +478,8 @@ you should place your code here."
 
 
   (global-company-mode)
-  (add-to-list 'load-path "/home/alkhaldieid/.emacs.d/private/org-recoll/org-recoll")
-  (require 'org-recoll)
+  ;; (add-to-list 'load-path "/home/alkhaldieid/.emacs.d/private/org-recoll/org-recoll")
+  ;; (require 'org-recoll)
   (menu-bar-mode 1)
   (add-to-list 'deft-extensions "tex")
   (setq
@@ -550,8 +551,203 @@ you should place your code here."
 
 ;; )
 )
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
+;;   (setq user-full-name "Eid Alkhaldi")
+;;   (setq line-move-visual t)
+  (global-visual-line-mode t)
+
+;;   ;; from  this article  https://www.fbxiang.com/blog/2017/11/01/write_papers_with_org_mode_and_spacemacs.html
+;;   (setq org-latex-pdf-process
+;;         '("latexmk -pdflatex='pdflatex -interaction nonstopmode' -pdf -bibtex -f %f"))
+;;   ;; (require 'org)
+;;   (require 'ox-latex)
+;;   (setq org-latex-create-formula-image-program 'dvipng)
+;;   (org-babel-do-load-languages 'org-babel-load-languages '((latex . t)))
+;;   (with-eval-after-load 'org-agenda
+;;     (require 'org-projectile)
+;;     (mapcar '(lambda (file)
+;;                (when (file-exists-p file)
+;;                  (push file org-agenda-files)))
+;;             (org-projectile-todo-files)))
+;;   ;;; to fix no org-babel-execute function for python
+;;   (org-babel-do-load-languages 'org-babel-load-languages '((python . t)))
+
+
+;;   (global-company-mode)
+;;   ;; (add-to-list 'load-path "/home/alkhaldieid/.emacs.d/private/org-recoll/org-recoll")
+;;   ;; (require 'org-recoll)
+;;   (menu-bar-mode 1)
+;;   (add-to-list 'deft-extensions "tex")
+
+;;   (setq
+;;    bibtex-completion-notes-path "/home/alkhaldieid/Dropbox/org/roam/"
+;;    bibtex-completion-bibliography "/Dropbox/mend/library.bib"
+;;    bibtex-completion-pdf-field "file"
+;;    bibtex-completion-notes-template-multiple-files
+;;    (concat
+;;     "#+TITLE: ${title}\n"
+;;     "#+ROAM_KEY: cite:${=key=}\n"
+;;     "* TODO Notes\n"
+;;     ":PROPERTIES:\n"
+;;     ":Custom_ID: ${=key=}\n"
+;;     ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+;;     ":AUTHOR: ${author-abbrev}\n"
+;;     ":JOURNAL: ${journaltitle}\n"
+;;     ":DATE: ${date}\n"
+;;     ":YEAR: ${year}\n"
+;;     ":DOI: ${doi}\n"
+;;     ":URL: ${url}\n"
+;;     ":END:\n\n"
+;;     )
+;;    )
+;;   (setq
+;;          org-ref-completion-library 'org-ref-ivy-cite
+;;          org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+;;          org-ref-default-bibliography (list "/home/alkhaldieid/Dropbox/mend/library.bib")
+;;          org-ref-bibliography-notes "/home/alkhaldieid/Dropbox/org/roam/bibnotes.org"
+;;          org-ref-note-title-format "* TODO %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+;;          org-ref-notes-directory "/home/alkhaldieid/Dropbox/org/roam/"
+;;          org-ref-notes-function 'orb-edit-notes
+;;     )
+;;   (setq
+;;    org-noter-default-notes-file-name '("/home/alkhaldieid/Dropbox/notes.org")
+;;    org-noter-default-search-path '("/home/alkhaldieid/Dropbox/mend")
+
+;;    )
+;; ;;;;; enable copy to the system clipboard
+;;   (defun copy-to-clipboard ()
+;;     "Copies selection to x-clipboard."
+;;     (interactive)
+;;     (if (display-graphic-p)
+;;         (progn
+;;           (message "Yanked region to x-clipboard!")
+;;           (call-interactively 'clipboard-kill-ring-save)
+;;           )
+;;       (if (region-active-p)
+;;           (progn
+;;             (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
+;;             (message "Yanked region to clipboard!")
+;;             (deactivate-mark))
+;;         (message "No region active; can't yank to clipboard!")))
+;;     )
+
+;;   (defun paste-from-clipboard ()
+;;     "Pastes from x-clipboard."
+;;     (interactive)
+;;     (if (display-graphic-p)
+;;         (progn
+;;           (clipboard-yank)
+;;           (message "graphics active")
+;;           )
+;;       (insert (shell-command-to-string "xsel -o -b"))
+;;       )
+;;     )
+;;   (evil-leader/set-key "o y" 'copy-to-clipboard)
+;;   (evil-leader/set-key "o p" 'paste-from-clipboard)
+
+;;   ;;;;;;;;;;DEFT config
+;;   (setq deft-directory "~/Dropbox/org/roam")
+;;   ;; (synosaurus-mode 1)
+;;   ;; (synosaurus-backend (quote synosaurus-backend-wordnet))
+;;   ;; (synosaurus-choose-method (quote default))
+;;   ;; (spacemacs/declare-prefix "y" "synosaurus")
+;;   ;; (spacemacs/set-leader-keys
+;;   ;; "yr" 'synosaurus-choose-and-replace)
+;;   ;; (spacemacs/declare-prefix "o" "own-menu")
+;;   ;; (spacemacs/set-leader-keys "os" 'ispell-buffer)
+;;   ;; (add-to-list 'load-path "/home/alkhaldieid/.ihsec/mybuild/elpa/synosaurus-20191125.552")
+;;   ;; (require 'synosaurus)
+;;   ;; Actually start using templates
+;;   ;; (after! org-capture
+;;           ;; Firefox and Chrome
+;;           (add-to-list 'org-capture-templates
+;;                        '("P" "Protocol" entry ; key, name, type
+;;                          (file+headline +org-capture-notes-file "Inbox") ; target
+;;                          "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"
+;;                          :prepend t ; properties
+;;                          :kill-buffer t))
+;;           (add-to-list 'org-capture-templates
+;;                        '("L" "Protocol Link" entry
+;;                          (file+headline +org-capture-notes-file "Inbox")
+;;                          "* %? [[%:link][%(transform-square-brackets-to-round-ones \"%:description\")]]\n"
+;;                          :prepend t
+;;                          :kill-buffer t))
+;;    ;;; enables the live-preview of compiled pdfs
+;;    (add-hook 'doc-view-mode-hook 'auto-revert-mode)
+
+;; ;; )
+;;    (with-eval-after-load 'ox-latex
+
+;;       (add-to-list 'org-latex-classes
+;;                     '("myieeeconf"
+;;                       "\\documentclass[a4paper, 12 pt, conference]{ieeeconf}
+;;             [NO-DEFAULT-PACKAGES]
+;;             [PACKAGES]
+;;             [EXTRA]"
+;;                       ("\\section{%s}" . "\\section*{%s}")
+;;                       ("\\subsection{%s}" . "\\subsection*{%s}")
+;;                       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+;;                       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+;;                       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+;;       (add-to-list 'org-latex-classes
+;;                    '("org-article"
+;;                      "\\documentclass{org-article}
+;;             [NO-DEFAULT-PACKAGES]
+;;             [PACKAGES]
+;;             [EXTRA]"
+;;                      ("\\section{%s}" . "\\section*{%s}")
+;;                      ("\\subsection{%s}" . "\\subsection*{%s}")
+;;                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+;;                      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+;;                      ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+;;       )
+
+;;    ;; (use-package emms
+;;    ;;   :ensure t
+;;    ;;   :config
+;;    ;;   (require 'emms-setup)
+;;    ;;   (require 'emms-player-mpd)
+;;    ;;   (emms-all) ; don't change this to values you see on stackoverflow questions if you expect emms to work
+;;    ;;   (setq emms-seek-seconds 5)
+;;    ;;   (setq emms-player-list '(emms-player-mpd))
+;;    ;;   (setq emms-info-functions '(emms-info-mpd))
+;;    ;;   (setq emms-player-mpd-server-name "localhost")
+;;    ;;   (setq emms-player-mpd-server-port "6607")
+;;    ;;   :bind
+;;    ;;   ("s-m p" . emms)
+;;    ;;   ("s-m b" . emms-smart-browse)
+;;    ;;   ("s-m r" . emms-player-mpd-update-all-reset-cache)
+;;    ;;   ("<XF86AudioPrev>" . emms-previous)
+;;    ;;   ("<XF86AudioNext>" . emms-next)
+;;    ;;   ("<XF86AudioPlay>" . emms-pause)
+;;    ;;   ("<XF86AudioStop>" . emms-stop))
+
+;;    ;; (setq mpc-host "localhost:6607")
+;;    ;; (defun mpd/start-music-daemon ()
+;;    ;;   "Start MPD, connects to it and syncs the metadata cache."
+;;    ;;   (interactive)
+;;    ;;   (shell-command "mpd")
+;;    ;;   (mpd/update-database)
+;;    ;;   (emms-player-mpd-connect)
+;;    ;;   (emms-cache-set-from-mpd-all)
+;;    ;;   (message "MPD Started!"))
+;;    ;; (global-set-key (kbd "s-m c") 'mpd/start-music-daemon)
+;;    ;; (defun mpd/kill-music-daemon ()
+;;    ;;   "Stops playback and kill the music daemon."
+;;    ;;   (interactive)
+;;    ;;   (emms-stop)
+;;    ;;   (call-process "killall" nil nil nil "mpd")
+;;    ;;   (message "MPD Killed!"))
+;;    ;; (global-set-key (kbd "s-m k") 'mpd/kill-music-daemon)
+;;    ;; (defun mpd/update-database ()
+;;    ;;   "Updates the MPD database synchronously."
+;;    ;;   (interactive)
+;;    ;;   (call-process "mpc" nil nil nil "update")
+;;    ;;   (message "MPD Database Updated!"))
+;;    ;; (global-set-key (kbd "s-m u") 'mpd/update-database)
+;; )
+;; ;; Do not write anything past this comment. This is where Emacs will
+;; ;; auto-generate custom variable definitions.
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -581,12 +777,20 @@ This function is called at the very end of Spacemacs initialization."
     ("f56eb33cd9f1e49c5df0080a3e8a292e83890a61a89bceeaa481a5f183e8e3ef" "82360e5f96244ce8cc6e765eeebe7788c2c5f3aeb96c1a765629c5c7937c0b5b" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "fa96a61e4eca5f339ad7f1f3442cb5a83696f6a45d9fe2a7bf3b75fc6912bb91" "0fffa9669425ff140ff2ae8568c7719705ef33b7a927a0ba7c5e2ffcfac09b75" "7325707722224b12180bfdcad597c5a79b2efe061f17df8fa24a8cb82839e854" default)))
  '(evil-want-Y-yank-to-eol nil)
  '(helm-recoll-directories (quote (("~/Dropbox/mend/" . ""))))
- '(org-agenda-files (quote ("~/Dropbox/main_org/main.org")))
+ '(org-agenda-files
+   (quote
+    ("~/Dropbox/org/roam/2020-08-25-1144-fuzzy.org" "~/Dropbox/TODOs.org" "~/Dropbox/planning/8-24-20.org" "~/Dropbox/TODOs.org" "~/Dropbox/second_final/paper.org")))
+ '(org-format-latex-options
+   (quote
+    (:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\["))))
+ '(org-latex-prefer-user-labels t)
  '(org-roam-directory "/home/alkhaldieid/Dropbox/org/roam")
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
    (quote
-    (helm-emms emms-state emms unfill mwim bibtex-completion awqat magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht engine-mode ranger auctex-latexmk yasnippet-classic-snippets web-mode tagedit slim-mode scss-mode sass-mode pug-mode org-ref pdf-tools key-chord ivy tablist insert-shebang helm-css-scss helm-bibtex parsebib haml-mode fish-mode emmet-mode ein polymode deferred anaphora websocket company-web web-completion-data company-shell biblio biblio-core org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot mango-dark-theme xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help conda smeargle orgit magit-gitflow magit-popup helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit git-commit with-editor transient helm-company helm-c-yasnippet fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet auto-dictionary auctex ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async notmuch)))
+    (unfill mwim bibtex-completion awqat magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht engine-mode ranger auctex-latexmk yasnippet-classic-snippets web-mode tagedit slim-mode scss-mode sass-mode pug-mode org-ref pdf-tools key-chord ivy tablist insert-shebang helm-css-scss helm-bibtex parsebib haml-mode fish-mode emmet-mode ein polymode deferred anaphora websocket company-web web-completion-data company-shell biblio biblio-core org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot mango-dark-theme xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help conda smeargle orgit magit-gitflow magit-popup helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit git-commit with-editor transient helm-company helm-c-yasnippet fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet auto-dictionary auctex ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async notmuch)))
+ '(preview-scale-function 2)
  '(synosaurus-backend (quote synosaurus-backend-wordnet))
  '(synosaurus-choose-method (quote default)))
 (custom-set-faces
