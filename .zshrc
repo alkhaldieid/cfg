@@ -98,3 +98,6 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+cat '/home/alkhaldieid/.cache/neofetch'
+source /home/alkhaldieid/.config/zsh/zshrc1
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

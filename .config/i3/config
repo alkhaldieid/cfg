@@ -212,5 +212,6 @@ exec emacs
 bindsym $mod+b exec --no-startup-id $BROWSER
 exec "setxkbmap -layout us,ara"
 exec "setxkbmap -option 'grp:alt_shift_toggle'"
+exec_always launch_poly
 #bindsym $mod+Alt+1 exec $term ara
 #bindsym $mod+Alt+2 exec $term enn
