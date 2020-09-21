@@ -31,6 +31,46 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(;;; prose
+     (auto-completion :variables
+                      auto-completion-return-key-behavior 'complete
+                      auto-completion-tab-key-behavior 'cycle
+                      auto-completion-complete-with-key-sequence-delay 0.0
+                      auto-completion-minimum-prefix-length 1
+                      auto-completion-idle-delay 0.0
+                      auto-completion-private-snippets-directory nil
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-use-company-box nil
+                      auto-completion-enable-sort-by-usage t)
+     (spell-checking :variables
+                     spell-checking-enable-by-default nil
+                     spell-checking-enable-auto-dictionary t
+                     enable-flyspell-auto-completion t
+                     )
+     (syntax-checking :variables
+                      syntax-checking-enable-tooltips t
+                      syntax-checking-enable-by-default t
+                      syntax-checking-auto-hide-tooltips 5
+                      )
+     ;; Python stuff
+     (python :variables
+             python-backend 'anaconda
+             python-formatter 'yapf
+             python-format-on-save t
+             python-fill-column 99
+             python-sort-imports-on-save t
+
+             )
+     (conda :variables
+            conda-anaconda-home "/home/alkhaldieid/anaconda3/"
+            python-test-runner 'pytest
+            python-formatter 'yapf
+            python-format-on-save t
+            python-save-before-test t
+            python-fill-column 99
+            python-sort-imports-on-save t
+            )
+     ipython-notebook
      bibtex
      (latex :variables
             latex-enable-folding t
@@ -59,50 +99,21 @@ values."
            org-enable-sticky-header t
            )
      helm
-     (auto-completion :variables
-                      auto-completion-return-key-behavior 'complete
-                      auto-completion-tab-key-behavior 'cycle
-                      ;; auto-completion-complete-with-key-sequence "jk"
-                      auto-completion-complete-with-key-sequence-delay 0.0
-                      auto-completion-minimum-prefix-length 1
-                      auto-completion-idle-delay 0.0
-                      auto-completion-private-snippets-directory nil
-                      auto-completion-enable-snippets-in-popup t
-                      auto-completion-enable-help-tooltip t
-                      auto-completion-use-company-box t
-                      auto-completion-enable-sort-by-usage t)
      shell
-     (conda :variables
-             conda-anaconda-home "/home/alkhaldieid/anaconda3/"
-             python-test-runner 'pytest
-             python-formatter 'yapf
-             python-format-on-save t
-             python-save-before-test t
-             python-fill-column 99
-             python-sort-imports-on-save t
-             )
-     (python :variables python-backend 'anaconda)
-     ipython-notebook
      html
-     octave
      pdf
      ( better-defaults :variables
                        better-defaults-move-to-beginning-of-code-first t
                        better-defaults-move-to-end-of-code-first t
      )
      helpful
-     (ranger :variables
-             ranger-show-preview t)
-
      emacs-lisp
      git
      markdown
      quickurl
      semantic
-     ;; selectric
      emoji
      (unicode-fonts :variables unicode-fonts-force-multi-color-on-mac t)
-     ;; treemacs
      spell-checking
      ;; multiple-cursors :variables multiple-cursors-backend 'evil-mc
      syntax-checking
@@ -112,7 +123,6 @@ values."
      org-roam-bibtex
      org-noter
      synosaurus
-     ;; media
      (deft :variables
            deft-zetteldeft t
            deft-default-extension "org"
@@ -131,9 +141,8 @@ values."
      (search-engine :variables
                     browse-url-browser-function 'browse-url-generic
                     engine/browser-function 'browse-url-generic
-                    browse-url-generic-program "brave")
+                    browse-url-generic-program "brave-browser")
      github
-     media
      )
 
    ;; List of additional packages that will be installed without being
@@ -142,7 +151,6 @@ values."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(
                                       helm-recoll
-                                      ;; org-noter
                                       )
 
    ;; (org-recoll :location (recipe :fetcher github :repo "alraban/org-recoll"));; awqat :location (recipe
@@ -224,14 +232,14 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(manoj-dark
+   dotspacemacs-themes '(spacemacs-dark
                          tango-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 18
+                               :size 24
                                :weight normal
                                :width normal
                                :powerline-scale 1.2)
@@ -465,13 +473,13 @@ you should place your code here."
   ;; org settings
   ;; org settings
   (setq user-full-name "Eid Alkhaldi")
-  (require 'org)
+  (require 'ox)
   (require 'ox-latex)
   (setq org-latex-create-formula-image-program 'dvipng)
   (org-babel-do-load-languages 'org-babel-load-languages '((latex . t)))
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
-    (mapcar '(lambda (file)
+    (mapcar #'(lambda (file)
                (when (file-exists-p file)
                  (push file org-agenda-files)))
             (org-projectile-todo-files)))
@@ -518,7 +526,17 @@ you should place your code here."
    org-noter-default-search-path '("/home/alkhaldieid/Dropbox/mend")
 
    )
+;; open pdfs with zathura
+  ;; (setq org-ref-open-pdf-function
+  ;;       (lambda (fpath)
+  ;;         (start-process "zathura" "*helm-bibtex-zathura*" "/usr/bin/zathura" fpath)))
+  ;; (defun bibtex-completion-pdf-open-with-evince (entry)
+  ;;   (let ((pdf (bibtex-completion-find-pdf entry)))
+  ;;     (call-process "zathura" nil 0 nil (car pdf))))
 
+  ;; (ivy-add-actions
+  ;;  'ivy-bibtex
+  ;;  '(("P" bibtex-completion-pdf-open-with-evince "Open PDF with Evince")))
 
   ;;;;;;;;;;DEFT config
   (setq deft-directory "~/Dropbox/org/roam")
@@ -555,7 +573,7 @@ you should place your code here."
 ;;   (setq user-full-name "Eid Alkhaldi")
 ;;   (setq line-move-visual t)
   (global-visual-line-mode t)
-
+  ;; (spacemacs/set-font "Source Code Pro"  24)
 ;;   ;; from  this article  https://www.fbxiang.com/blog/2017/11/01/write_papers_with_org_mode_and_spacemacs.html
 ;;   (setq org-latex-pdf-process
 ;;         '("latexmk -pdflatex='pdflatex -interaction nonstopmode' -pdf -bibtex -f %f"))
@@ -570,8 +588,7 @@ you should place your code here."
 ;;                  (push file org-agenda-files)))
 ;;             (org-projectile-todo-files)))
 ;;   ;;; to fix no org-babel-execute function for python
-;;   (org-babel-do-load-languages 'org-babel-load-languages '((python . t)))
-
+  (org-babel-do-load-languages 'org-babel-load-languages '((python . t)))
 
 ;;   (global-company-mode)
 ;;   ;; (add-to-list 'load-path "/home/alkhaldieid/.emacs.d/private/org-recoll/org-recoll")
@@ -791,8 +808,10 @@ This function is called at the very end of Spacemacs initialization."
  '(org-trello-current-prefix-keybinding "C-c o" nil (org-trello))
  '(package-selected-packages
    (quote
-    (helm-emms emms-state emms unfill mwim bibtex-completion awqat magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht engine-mode ranger auctex-latexmk yasnippet-classic-snippets web-mode tagedit slim-mode scss-mode sass-mode pug-mode org-ref pdf-tools key-chord ivy tablist insert-shebang helm-css-scss helm-bibtex parsebib haml-mode fish-mode emmet-mode ein polymode deferred anaphora websocket company-web web-completion-data company-shell biblio biblio-core org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot mango-dark-theme xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help conda smeargle orgit magit-gitflow magit-popup helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit git-commit with-editor transient helm-company helm-c-yasnippet fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet auto-dictionary auctex ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async notmuch)))
+    (flyspell-popup unfill mwim bibtex-completion awqat magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht engine-mode ranger auctex-latexmk yasnippet-classic-snippets web-mode tagedit slim-mode scss-mode sass-mode pug-mode org-ref pdf-tools key-chord ivy tablist insert-shebang helm-css-scss helm-bibtex parsebib haml-mode fish-mode emmet-mode ein polymode deferred anaphora websocket company-web web-completion-data company-shell biblio biblio-core org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download htmlize gnuplot mango-dark-theme xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help conda smeargle orgit magit-gitflow magit-popup helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit git-commit with-editor transient helm-company helm-c-yasnippet fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck company-statistics company-auctex company-anaconda company auto-yasnippet yasnippet auto-dictionary auctex ac-ispell auto-complete mmm-mode markdown-toc markdown-mode gh-md yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra lv hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async notmuch)))
  '(preview-scale-function 2)
+ '(python-indent-guess-indent-offset t)
+ '(python-indent-guess-indent-offset-verbose nil)
  '(synosaurus-backend (quote synosaurus-backend-wordnet))
  '(synosaurus-choose-method (quote default)))
 (custom-set-faces
@@ -800,5 +819,5 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background nil)))))
+ )
 )
